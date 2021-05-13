@@ -13,7 +13,7 @@ int main(int argc, char const *argv[])
     int server_fd, new_socket; long valread;
     struct sockaddr_in address;
     int addrlen = sizeof(address);
-    
+    int yes = 1;
     char *hello = "Hello from server\n";
     
     // Creating socket file descriptor
@@ -23,7 +23,11 @@ int main(int argc, char const *argv[])
         exit(EXIT_FAILURE);
     }
     
+	if (setsockopt(server_fd,SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == -1){
 
+		perror("setting socket option SO_REUSEADDR");
+		exit(EXIT_FAILURE);
+	}
     address.sin_family = AF_INET;
     address.sin_addr.s_addr = INADDR_ANY;
     address.sin_port = htons( PORT );
